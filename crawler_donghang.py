@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common import actions
 
-def nanhangcrawler(city1,city2,date_in):
+def donghangcrawler(city1,city2,date_in):
 	infolist = []
 	pricelist = []
 	resultlist = []
@@ -76,6 +76,6 @@ if __name__=="__main__":
 	city1 = "上海"
 	city2 = "北京"
 	date_in = '20200706'  # 实例格式如 20200706
-	a=nanhangcrawler(city1, city2, date_in)
+	a=donghangcrawler(city1, city2, date_in)
 	for i in a:
 		print(i.values())
