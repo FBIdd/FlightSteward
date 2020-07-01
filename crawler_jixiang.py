@@ -1,5 +1,6 @@
 from selenium import webdriver
 import time
+import csv
 import copy
 import re
 from selenium.webdriver.common.by import By
@@ -50,6 +51,9 @@ def jixiangcrawler(city1,city2,date_in):
 	search.click()
 	time.sleep(5)
 	flightdata = browser.find_elements_by_xpath("//div[@class='flt_No']")
+	if flightdata is None:
+		print("----------吉祥航空--No data---------")
+		return resultlist
 	dcitydata = browser.find_elements_by_xpath("//div[@class='flt_from']")
 	acitydata= browser.find_elements_by_xpath("//div[@class='flt_to']")
 	pricedata = browser.find_elements_by_xpath("//div[@class='flt_price']")
@@ -72,6 +76,12 @@ def jixiangcrawler(city1,city2,date_in):
 		cell['aAirport'] = aairportlist[i]
 		cell['LowestPrice'] = pricelist[i]
 		resultlist.append(cell.copy())
+	with open('./data/jixiang.csv', 'w', encoding='utf-8') as csvfile:
+		writer = csv.writer(csvfile, delimiter=',')
+		for i in resultlist:
+			writer.writerow([city1, city2, i.get("Airline"), i.get('FlightNumber'), i.get('dAirport'),
+							 i.get('aAirport'), i.get('dTime'), i.get('aTime'), i.get('LowestPrice'), '吉祥航空'])
+	csvfile.close()
 
 	return resultlist
 
