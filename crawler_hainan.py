@@ -13,7 +13,6 @@ def nanhangcrawler(city1,city2,date_in):
 	cityb = browser.find_element_by_id("to_city1")  # 到达城市
 	date = browser.find_element_by_id("flightBeginDate1")  # 日期不能直接输入，需要等待生成选择界面
 	search = browser.find_element_by_class_name("btn-search")  # 查询按钮
-	search1 = browser.find_element_by_xpath("//div[@class='fr']")
 	icon = browser.find_element_by_id("onlyDirectId")  # 选择按钮
 	time.sleep(1)
 	citya.clear()
@@ -29,8 +28,10 @@ def nanhangcrawler(city1,city2,date_in):
 	date.send_keys(date_in)
 	icon.click()  # 选择只看直飞航班的选择按钮
 	time.sleep(1)
-	search1.click()
+	tip = ActionChains(browser)
+	tip.move_to_element(search).perform()
 	time.sleep(0.5)
+	tip.context_click(search).perform()
 	time.sleep(10)
 	data = 1
 	return data
