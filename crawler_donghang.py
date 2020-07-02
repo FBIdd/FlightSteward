@@ -1,5 +1,6 @@
 from selenium import webdriver
 import time
+import csv
 import copy
 import re
 from selenium.webdriver.common.by import By
@@ -9,6 +10,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common import actions
 
 def donghangcrawler(city1,city2,date_in):
+	print("东方航空爬虫开始运行")
 	infolist = []
 	pricelist = []
 	resultlist = []
@@ -42,11 +44,14 @@ def donghangcrawler(city1,city2,date_in):
 	datex.send_keys(Keys.TAB)  # 消除日历菜单
 	time.sleep(0.5)
 	search.click()
-	time.sleep(1)
+	time.sleep(3)
 	browser.switch_to.window(browser.window_handles[1])  # 定位到跳转后的查询结果页面
 	time.sleep(5)
 	info = browser.find_elements_by_xpath("//section[@class='summary']")  # 信息模块组
 	price = browser.find_elements_by_xpath("//dd[@data-type='economy']")  # 价格方块组
+	if info is None or price is None:
+		print("----东航--nodata----")
+		return resultlist
 	for i in info:
 		clean = str(i.text).strip().split() # 解析机票基本信息
 		# ['东方航空', '|', 'MU5104|直达|', '09:00', '首都国际机场', 'T2', '直达', '11:15', '虹桥国际机场', 'T2', '02小时15分钟']
@@ -69,13 +74,20 @@ def donghangcrawler(city1,city2,date_in):
 		cell['aAirport'] = info_[7]
 		cell['LowestPrice'] = price_
 		resultlist.append(cell.copy())
+	with open('./data/donghang.csv', 'w', encoding='utf-8') as csvfile:
+		writer = csv.writer(csvfile, delimiter=',')
+		for i in resultlist:
+			writer.writerow([city1, city2, i.get("Airline"), i.get('FlightNumber'), i.get('dAirport'),
+							 i.get('aAirport'), i.get('dTime'), i.get('aTime'), i.get('LowestPrice'), '东方航空'])
+	csvfile.close()
+	print("东方航空爬虫运行结束")
 	return resultlist
 
 
 if __name__=="__main__":
 	city1 = "上海"
-	city2 = "北京"
-	date_in = '20200706'  # 实例格式如 20200706
+	city2 = "广州"
+	date_in = '20200705'  # 实例格式如 20200706
 	a=donghangcrawler(city1, city2, date_in)
 	for i in a:
 		print(i.values())
