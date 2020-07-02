@@ -51,25 +51,33 @@ def jixiangcrawler(city1,city2,date_in):
 	time.sleep(0.5)
 	search.click()
 	time.sleep(5)
-	flightdata = browser.find_elements_by_xpath("//div[@class='flt_No']")
+	flightdata = browser.find_elements_by_xpath("//span[@class='flight-number']")
 	if flightdata is None:
 		print("----------吉祥航空--No data---------")
 		return resultlist
-	dcitydata = browser.find_elements_by_xpath("//div[@class='flt_from']")
-	acitydata= browser.find_elements_by_xpath("//div[@class='flt_to']")
-	pricedata = browser.find_elements_by_xpath("//div[@class='flt_price']")
+	dcitydata = browser.find_elements_by_xpath("//li[@class='flightList_item_departureInfo']")
+	acitydata= browser.find_elements_by_xpath("//li[@class='flightList_item_arrivalInfo']")
+	pricedata = browser.find_elements_by_xpath("//span[@class='flightPrice']")
 	lenth= len(pricedata)
+	for i in flightdata:
+		print(i.text)
+	for i in dcitydata:
+		print(i.text)
+	for i in acitydata:
+		print(i.text)
+	for i in pricedata:
+		print(i.text)
 
 	for i in range(lenth):
-		flightlist.append(str(flightdata[i].text))
-		dtimelist.append(str(dcitydata[i].text).split()[0])
-		dairportlist.append(str(dcitydata[i].text).split()[1])
-		atimelist.append(str(acitydata[i].text).split()[0])
-		aairportlist.append(str(acitydata[i].text).split()[1])
-		pricelist.append(str(pricedata[i].text)[1:-1])
+		flightlist.append(str(flightdata[i].text).split('|')[0].strip())
+		dtimelist.append(str(dcitydata[i].text).split()[1])
+		dairportlist.append(str(dcitydata[i].text).split()[2])
+		atimelist.append(str(acitydata[i].text).split()[1])
+		aairportlist.append(str(acitydata[i].text).split()[2])
+		pricelist.append(str(pricedata[i].text))
 
 	for i in range(lenth):
-		cell['Airline'] = "吉祥航空"
+		cell['Airline'] = "中国联合航空"
 		cell['FlightNumber'] = flightlist[i]
 		cell['dTime'] = dtimelist[i]
 		cell['dAirport'] = dairportlist[i]
@@ -87,8 +95,8 @@ def jixiangcrawler(city1,city2,date_in):
 
 if __name__=="__main__":
 	city1 = "上海"
-	city2 = "广州"
-	date_in = '20200706'  # 实例格式如 20200706
+	city2 = "北京"
+	date_in = '20200717'  # 实例格式如 20200706
 	a=jixiangcrawler(city1, city2, date_in)
 	for i in a:
 		print(i.values())
