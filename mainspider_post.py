@@ -1,6 +1,7 @@
 import requests
 import json
 import copy
+import csv
 
 def getdata(city1,city2,date):
     headers = {
@@ -63,30 +64,45 @@ def analyse(dict_load):  # 手动分析目标位置
     return 0
 
 # 数据层次为json-data-routeList-legs-flights 以及json-data-routeList-characteristic-lowestPrices
-def message(dict_load):  # 提取数据的函数
+def message(dict_load, city1, city2, date):  # 提取数据的函数
     routeList = dict_load.get('data').get('routeList')
     msg = {}
     list= []
+    airlinelist = []
     if routeList is None:
         print("\n------no data-------")
-        return
+        return list
     for route in routeList:
         if route['routeType'] == 'Flight':  # 挑选出飞机直达的航线
             legs = route.get('legs')[0]
             flight = legs.get('flight')
+            print(flight)
             msg['Airline'] = flight.get('airlineName')  # 航空公司
             msg['FlightNumber'] = flight.get('flightNumber') #  航班号
-            msg['Date'] = flight.get('departureDate')[-8:-3] + "--" + flight.get('arrivalDate')[-8:-3]  # 格式化时间
+            msg['dAirportName'] = flight.get('departureAirportInfo').get('airportName')
+            msg['dTime'] = flight.get('departureDate')[-8:-3]
+            msg['aTime'] = flight.get('arrivalDate')[-8:-3]  # 格式化时间
+            msg['aAirportName'] = flight.get('arrivalAirportInfo').get('airportName')
             msg['PunctualityRate'] = flight.get('punctualityRate') #  准点率
             msg['Price'] = legs.get('characteristic').get('lowestPrice') #  最低价格
             list.append(copy.copy(msg))  # 将结果字典写入list,这里使用了copy.copy的浅拷贝方法
-    return list
+            import csv
+            with open('./data/maindata.csv', 'w', encoding='utf-8') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',')
+                writer.writerow(['始发地', '目的地', '航空公司', '航班号', '始发机场', '到达机场', '起飞时间', '到达时间',
+                                 '机票价格', '数据来源'])
+                for i in list:
+                    writer.writerow([city1, city2, i.get("Airline"), i.get('FlightNumber'), i.get('dAirportName'),
+                                    i.get('dAirportName'), i.get('dTime'), i.get('aTime'), i.get('Price'), '携程'])
+                for i in list:
+                    if i.get('Air') not in airlinelist:
+                        airlinelist.append(i.get('airline'))  # 得到要运行爬虫的公司名单
+    return airlinelist
+
+
 
 if __name__=='__main__':  #实例程序
-    list=message(getdata('北京', '上海', '20200705'))
-    for i in list:
-        print(i.values())
-  # analyse(getdata('北京', '上海', '20200701'))
+    message(getdata('广州', '北京', '20200705'), '广州', '北京', '20200705')
 
 
 
