@@ -5,8 +5,9 @@ import  selenium
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
-# 只能上海到广州
-def jixiangcrawler(city1,city2,date_in):
+# 不能广州到上海
+def lianhangcrawler(city1,city2,date_in):
+	print("中国联合航空爬虫开始运行")
 	flightlist = []
 	pricelist = []
 	resultlist = []
@@ -91,6 +92,7 @@ def jixiangcrawler(city1,city2,date_in):
 			writer.writerow([city1, city2, i.get("Airline"), i.get('FlightNumber'), i.get('dAirport'),
 							 i.get('aAirport'), i.get('dTime'), i.get('aTime'), i.get('LowestPrice'), '中国联合航空'])
 	csvfile.close()
+	print("中国联合航空航空爬虫运行结束")
 	return resultlist
 
 if __name__=="__main__":
