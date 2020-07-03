@@ -15,12 +15,11 @@ city = ['北京', '上海', '广州']
 for i in city:
 	for j in city:
 		if i is not j:
-			for date in range(20200706, 202007015):
+			for date in range(20200706, 20200710):
 				order['city1'] = i
 				order['city2'] = j
 				order['date'] = str(date)
-				tool = copy.copy(order)
-				orderlist.append(tool)  # 初始指令池
+				orderlist.append(order.copy())  # 初始指令池
 random.shuffle(orderlist)  # 随机排序
 
 for od in orderlist:
