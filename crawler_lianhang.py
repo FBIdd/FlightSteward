@@ -13,11 +13,11 @@ def lianhangcrawler(city1,city2,date_in):
 	resultlist = []
 	dairportlist=[]
 	dtimelist=[]
-	atimelist=[]
+	at	imelist=[]
 	aairportlist=[]
 	cell = {}
 	date_in = date_in[0:4] + '-' + date_in[4:6] + '-' + date_in[6:8]
-	browser = webdriver.Firefox(executable_path="./webdriver/geckodriver.exe")
+	browser = webdriver.Chrome(executable_path="./webdriver/chromedriver.exe")
 	browser.get('http://www.flycua.com/')
 	citya = browser.find_element_by_id("_easyui_textbox_input1")
 	cityb = browser.find_element_by_id("_easyui_textbox_input2")
