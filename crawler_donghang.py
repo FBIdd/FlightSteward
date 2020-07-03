@@ -45,7 +45,12 @@ def donghangcrawler(city1,city2,date_in):
 	time.sleep(0.5)
 	search.click()
 	time.sleep(3)
-	browser.switch_to.window(browser.window_handles[1])  # 定位到跳转后的查询结果页面
+	try:
+		browser.switch_to.window(browser.window_handles[1])  # 定位到跳转后的查询结果页面
+	except BaseException:
+		time.sleep(5)
+		browser.switch_to.window(browser.window_handles[1])  # 定位到跳转后的查询结果页面
+
 	time.sleep(5)
 	info = browser.find_elements_by_xpath("//section[@class='summary']")  # 信息模块组
 	price = browser.find_elements_by_xpath("//dd[@data-type='economy']")  # 价格方块组
@@ -85,9 +90,9 @@ def donghangcrawler(city1,city2,date_in):
 
 
 if __name__=="__main__":
-	city1 = "上海"
+	city1 = "北京"
 	city2 = "广州"
-	date_in = '20200705'  # 实例格式如 20200706
+	date_in = '20200708'  # 实例格式如 20200706
 	a=donghangcrawler(city1, city2, date_in)
 	for i in a:
 		print(i.values())
