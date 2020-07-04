@@ -99,6 +99,6 @@ if __name__=="__main__":
 	city1 = "上海"
 	city2 = "北京"
 	date_in = '20200717'  # 实例格式如 20200706
-	a=jixiangcrawler(city1, city2, date_in)
+	a=lianhangcrawler(city1, city2, date_in)
 	for i in a:
 		print(i.values())
