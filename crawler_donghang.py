@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 import time
 import csv
 import copy
@@ -16,7 +17,10 @@ def donghangcrawler(city1,city2,date_in):
 	resultlist = []
 	cell = {}
 	date_in = date_in[0:4] + '-' + date_in[4:6] + '-' + date_in[6:8]
-	browser = webdriver.Chrome(executable_path="./webdriver/chromedriver.exe")
+	c_service = Service('./webdriver/chromedriver.exe')
+	c_service.command_line_args()
+	browser = webdriver.Chrome(executable_path='./webdriver/chromedriver.exe')
+	c_service.start()
 	browser.get('http://www.ceair.com/')
 	ad = browser.find_element_by_id("appd_wrap_close")
 	citya = browser.find_element_by_id("label_ID_0")  # 出发城市
@@ -48,7 +52,9 @@ def donghangcrawler(city1,city2,date_in):
 	try:
 		browser.switch_to.window(browser.window_handles[1])  # 定位到跳转后的查询结果页面
 	except BaseException:
-		time.sleep(5)
+		time.sleep(3)
+		search.click()
+		time.sleep(3)
 		browser.switch_to.window(browser.window_handles[1])  # 定位到跳转后的查询结果页面
 
 	time.sleep(5)
@@ -79,20 +85,32 @@ def donghangcrawler(city1,city2,date_in):
 		cell['aAirport'] = info_[7]
 		cell['LowestPrice'] = price_
 		resultlist.append(cell.copy())
-	with open('./data/donghang.csv', 'w', encoding='utf-8') as csvfile:
-		writer = csv.writer(csvfile, delimiter=',')
-		for i in resultlist:
-			writer.writerow([city1, city2, i.get("Airline"), i.get('FlightNumber'), i.get('dAirport'),
-							 i.get('aAirport'), i.get('dTime'), i.get('aTime'), i.get('LowestPrice'), '东方航空'])
-	csvfile.close()
+	browser.quit()
+	c_service.stop()
+#	with open('./data/donghang.csv', 'w', encoding='utf-8') as csvfile: # 运行整个项目时解除此注释
+#		writer = csv.writer(csvfile, delimiter=',')
+#		for i in resultlist:
+#			writer.writerow([city1, city2, i.get("Airline"), i.get('FlightNumber'), i.get('dAirport'),
+#							 i.get('aAirport'), i.get('dTime'), i.get('aTime'), i.get('LowestPrice'), '东方航空'])
+#	csvfile.close()
 	print("东方航空爬虫运行结束")
 	return resultlist
 
 
 if __name__=="__main__":
-	city1 = "北京"
+	city1 = "上海"
 	city2 = "广州"
 	date_in = '20200708'  # 实例格式如 20200706
-	a=donghangcrawler(city1, city2, date_in)
-	for i in a:
-		print(i.values())
+	a= []
+	with open('./data/donghangS-G.csv', 'w', encoding='utf-8') as csvfile:
+			writer = csv.writer(csvfile, delimiter=',')
+			for date in range(20200705, 20200730):
+				try:
+					a = (donghangcrawler(city1, city2, str(date)))
+				except BaseException:
+					a = (donghangcrawler(city1, city2, str(date)))
+				for i in a:
+					writer.writerow([city1, city2, i.get("Airline"), i.get('FlightNumber'), i.get('dAirport'),
+									 i.get('aAirport'), i.get('dTime'), i.get('aTime'), i.get('LowestPrice'), '东方航空',
+									 date])
+	csvfile.close()

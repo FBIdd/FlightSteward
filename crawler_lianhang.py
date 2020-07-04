@@ -13,7 +13,7 @@ def lianhangcrawler(city1,city2,date_in):
 	resultlist = []
 	dairportlist=[]
 	dtimelist=[]
-	at	imelist=[]
+	atimelist=[]
 	aairportlist=[]
 	cell = {}
 	date_in = date_in[0:4] + '-' + date_in[4:6] + '-' + date_in[6:8]
@@ -50,7 +50,10 @@ def lianhangcrawler(city1,city2,date_in):
 		print('=====well=====')
 	print('----------------------')
 	time.sleep(0.5)
-	search.click()
+	try:
+		search.click()
+	except BaseException:
+		search.click()
 	time.sleep(5)
 	flightdata = browser.find_elements_by_xpath("//span[@class='flight-number']")
 	if flightdata is None:
