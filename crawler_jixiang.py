@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common import actions
 
-# 只能上海到广州
+
 def jixiangcrawler(city1,city2,date_in):
 	print("吉祥航空爬虫开始运行")
 	flightlist = []
@@ -49,7 +49,12 @@ def jixiangcrawler(city1,city2,date_in):
 	date.send_keys(Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE,
 				Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE, Keys.BACKSPACE, date_in)  # 清除默认值重新赋值，不能用clear
 	time.sleep(0.5)
-	search.click()
+	try:
+		search.click()
+	except BaseException:
+		time.sleep(5)
+		search.click()
+
 	time.sleep(5)
 	flightdata = browser.find_elements_by_xpath("//div[@class='flt_No']")
 	if flightdata is None:

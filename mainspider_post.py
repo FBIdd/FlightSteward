@@ -86,6 +86,8 @@ def message(dict_load, city1, city2, date):  # 提取数据的函数
             msg['PunctualityRate'] = flight.get('punctualityRate') #  准点率
             msg['Price'] = legs.get('characteristic').get('lowestPrice') #  最低价格
             list.append(copy.copy(msg))  # 将结果字典写入list,这里使用了copy.copy的浅拷贝方法
+            if msg['Airline'] not in airlinelist:
+                airlinelist.append(msg['Airline'])
             import csv
             with open('./data/maindata.csv', 'w', encoding='utf-8') as csvfile:
                 writer = csv.writer(csvfile, delimiter=',')
@@ -93,16 +95,16 @@ def message(dict_load, city1, city2, date):  # 提取数据的函数
                                  '机票价格', '数据来源'])
                 for i in list:
                     writer.writerow([city1, city2, i.get("Airline"), i.get('FlightNumber'), i.get('dAirportName'),
-                                    i.get('dAirportName'), i.get('dTime'), i.get('aTime'), i.get('Price'), '携程'])
+                                    i.get('aAirportName'), i.get('dTime'), i.get('aTime'), i.get('Price'), '携程'])
                 for i in list:
                     if i.get('Air') not in airlinelist:
                         airlinelist.append(i.get('airline'))  # 得到要运行爬虫的公司名单
+            csvfile.close()
     return airlinelist
 
 
-
 if __name__=='__main__':  #实例程序
-    message(getdata('广州', '北京', '20200705'), '广州', '北京', '20200705')
+    message(getdata('上海', '北京', '20200705'), '上海', '北京', '20200705')
 
 
 
